@@ -2,7 +2,7 @@
 <title>Sam² Kitchen Admin</title><link rel="icon" href="../assets/favicon.png"><link rel="stylesheet" href="admin.css"></head><body>
 <div id="login"><form id="lf"><img src="../assets/logo-256.webp" width="110" height="110" alt="Sam² Kitchen"><h1>Admin Login</h1>
 <input id="pw" type="password" placeholder="Admin password" autocomplete="current-password" required><button class="btn">Log in</button><p id="lerr" class="err"></p></form></div>
-<div id="app" hidden><header><img src="../assets/logo-256.webp" width="40" height="40" alt=""><b>Sam² Kitchen Admin</b><button class="btn ghost" id="lo">Log out</button></header>
+<div id="app" hidden><header><img src="../assets/logo-256.webp" width="40" height="40" alt=""><b>Sam² Kitchen Admin</b><span id="sv" aria-live="polite"></span><button class="btn ghost" id="lo">Log out</button></header>
 <nav id="nav"><button data-v="overview">Overview</button><button data-v="Products">Products</button><button data-v="Daily">Daily Menu</button><button data-v="Categories">Categories</button><button data-v="Deals">Deals</button><button data-v="Settings">Settings</button></nav>
 <main id="main"></main></div><dialog id="dlg"></dialog><div id="toast"></div>
 <script src="../js/config.js"></script><script src="admin.js"></script></body></html>

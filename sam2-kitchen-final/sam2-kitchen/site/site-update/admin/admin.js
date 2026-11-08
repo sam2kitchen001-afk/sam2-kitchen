@@ -10,16 +10,27 @@ async function api(body){if(!C.API_URL){return{error:"API_URL is empty in js/con
  try{const r=await fetch(C.API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({...body,token:T})});const d=await r.json();if(d.code==="auth")out();return d}catch(e){return{error:"Network problem. Please try again."}}}
 async function refresh(){const d=await api({action:"list"});if(d.error){toast(d.error,1);return false}DB=d;return true}
 function out(){T="";sessionStorage.removeItem("sam2t");$("#app").hidden=true;$("#login").hidden=false}
-async function act(body,ok){const d=await api(body);if(d.error){toast(d.error,1);return false}if(await refresh()){render();ok&&toast(ok)}return true}
-async function start(){if(!(await refresh()))return;$("#login").hidden=true;$("#app").hidden=false;render()}
-$("#lf").onsubmit=async e=>{e.preventDefault();$("#lerr").textContent="";const d=await api({action:"login",password:$("#pw").value});if(d.error){$("#lerr").textContent=d.error;return}T=d.token;sessionStorage.setItem("sam2t",T);$("#pw").value="";start()};
+let Q=Promise.resolve(),pend=0,svT;
+function sv(m){const e=$("#sv");if(!e)return;clearTimeout(svT);if(pend){e.textContent="Saving...";e.className="busy"}else if(m){e.textContent=m;e.className="";svT=setTimeout(()=>e.textContent="",2500)}else e.textContent=""}
+function local(b){const t=b.tab,c=E[t];
+ if(b.action==="upsert"){const r=b.record,id=String(r[c.k]);let row=DB[t].find(x=>String(x[c.k])===id);
+  if(!row){row={Order:Math.max(0,...DB[t].map(x=>+x.Order||0))+1,Available:true,Published:true,Featured:false,Active:true,ImageURL:"",Description:""};DB[t].push(row)}
+  Object.assign(row,r);["Price","Order"].forEach(k=>{if(k in r)row[k]=Number(r[k])})}
+ else if(b.action==="remove"){DB[t]=DB[t].filter(x=>String(x[c.k])!==String(b.id));if(t!=="Categories")DB.DailyMenu=DB.DailyMenu.filter(x=>String(x.ProductID)!==String(b.id))}
+ else if(b.action==="reorder"){b.ids.forEach((id,n)=>{const r=DB[t].find(x=>String(x[c.k])===String(id));if(r)r.Order=n+1})}
+ else if(b.action==="setDaily"){const d=!!b.date,k=d?b.date:b.day;DB.DailyMenu=DB.DailyMenu.filter(r=>!(d?String(r.Date)===k:(!r.Date&&r.Day===k)));b.ids.forEach((id,n)=>DB.DailyMenu.push({Date:d?k:"",Day:d?"":k,ProductID:id,Order:n+1}))}
+ else if(b.action==="setSetting"){let r=DB.Settings.find(x=>x.Key===b.key);if(!r){r={Key:b.key};DB.Settings.push(r)}r.Value=b.value}}
+function act(body){local(body);render();pend++;sv();
+ Q=Q.then(async()=>{const d=await api(body);pend--;if(d.error){toast(d.error,1);await refresh();render();sv()}else sv(pend?"":"Saved \u2713")});return true}
+async function start(){$("#login").hidden=true;$("#app").hidden=false;$("#main").innerHTML="<p>Loading...</p>";if(!(await refresh())){out();return}render()}
+$("#lf").onsubmit=async e=>{e.preventDefault();$("#lerr").textContent="";const bt=$("#lf .btn");bt.disabled=true;bt.textContent="Logging in...";const d=await api({action:"login",password:$("#pw").value});bt.disabled=false;bt.textContent="Log in";if(d.error){$("#lerr").textContent=d.error;return}T=d.token;sessionStorage.setItem("sam2t",T);$("#pw").value="";start()};
 $("#lo").onclick=async()=>{await api({action:"logout"});out()};
 $("#nav").onclick=e=>{const v=e.target.dataset.v;if(v){view=v;q="";sel=null;render()}};
 function render(){document.querySelectorAll("#nav button").forEach(x=>x.classList.toggle("on",x.dataset.v===view));
  ({overview:ovw,Products:()=>list("Products"),Daily:daily,Categories:()=>list("Categories"),Deals:()=>list("Deals"),Settings:sets})[view]()}
 const demoOn=()=>{const r=DB.Settings.find(x=>x.Key==="demo");return !r||b(r.Value)};
 const nowKeys=()=>({day:new Date().toLocaleDateString("en-US",{timeZone:C.TZ,weekday:"long"}),iso:new Date().toLocaleDateString("en-CA",{timeZone:C.TZ})});
-function ovw(){const P=DB.Products,{day,iso}=nowKeys(),tm=DB.DailyMenu.filter(r=>r.Date?String(r.Date)===iso:r.Day===day).length,
+function ovw(){const P=DB.Products,{day,iso}=nowKeys(),dt=DB.DailyMenu.filter(r=>r.Date&&String(r.Date)===iso),tm=(dt.length?dt:DB.DailyMenu.filter(r=>!r.Date&&r.Day===day)).length,
  off=DB.Deals.filter(d=>b(d.Published)&&b(d.Available)).length,c=(n,l)=>`<div class="stat"><b>${n}</b>${l}</div>`;
  $("#main").innerHTML=`<h2>Overview</h2><div class="stats">${c(P.length,"Total products")}${c(P.filter(p=>b(p.Published)).length,"Active (published)")}${c(P.filter(p=>!b(p.Available)).length,"Unavailable")}${c(DB.Categories.length,"Categories")}${c(tm,"In today's menu")}${c(off,"Active offers")}</div>`+(demoOn()?'<div class="note">Demo mode is ON: customers see a "Demo data" banner. Turn it off in Settings once your real menu is entered.</div>':"")}
 function list(tab){const c=E[tab],all=ord(DB[tab]),rows=all.filter(r=>!q||String(r.Name).toLowerCase().includes(q.toLowerCase()));
@@ -32,9 +43,9 @@ function list(tab){const c=E[tab],all=ord(DB[tab]),rows=all.filter(r=>!q||String
 $("#main").onclick=async e=>{const a=e.target.dataset.a;if(!a)return;const tab=view,c=E[tab],row=e.target.closest(".row"),id=row&&row.dataset.id;
  if(a==="add")return form(tab,"");if(a==="edit")return form(tab,id);
  if(a==="flag"){const r=DB[tab].find(x=>String(x[c.k])===id);return act({action:"upsert",tab,record:{[c.k]:id,[e.target.dataset.f]:!b(r[e.target.dataset.f])}})}
- if(a==="del"){if(!confirm("Delete this item? This cannot be undone."))return;return act({action:"remove",tab,id},"Deleted")}
+ if(a==="del"){if(tab==="Categories"&&DB.Products.some(p=>String(p.Category)===id)){toast("This category still has products. Move or delete them first.",1);return}if(!confirm("Delete this item? This cannot be undone."))return;return act({action:"remove",tab,id})}
  if(a==="up"||a==="dn"){const ids=ord(DB[tab]).map(x=>String(x[c.k])),i=ids.indexOf(id),j=a==="up"?i-1:i+1;if(j<0||j>=ids.length)return;[ids[i],ids[j]]=[ids[j],ids[i]];return act({action:"reorder",tab,ids})}
- if(a==="dsv")return act({action:"setDaily",[/^\d{4}/.test(dk)?"date":"day"]:dk,ids:sel},"Daily menu saved");
+ if(a==="dsv")return act({action:"setDaily",[/^\d{4}/.test(dk)?"date":"day"]:dk,ids:[...sel]});
  if(a==="dadd"){sel.push(e.target.dataset.i);return daily()}if(a==="drm"){sel=sel.filter(x=>x!==e.target.dataset.i);return daily()}
  if(a==="dup"||a==="ddn"){const i=sel.indexOf(e.target.dataset.i),j=a==="dup"?i-1:i+1;if(j<0||j>=sel.length)return;[sel[i],sel[j]]=[sel[j],sel[i]];return daily()}};
 function newId(tab,name){const c=E[tab],ids=DB[tab].map(x=>String(x[c.k]));if(tab==="Categories"){let s=name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,24)||"cat",n=s,i=2;while(ids.includes(n))n=s+"-"+i++;return n}
@@ -50,9 +61,12 @@ function form(tab,id){const c=E[tab],r=id?DB[tab].find(x=>String(x[c.k])===id):{
  const d=$("#dlg"),f=d.querySelector("form");d.showModal();
  d.onclick=e=>{const x=e.target.dataset.x;if(x==="cancel")d.close();if(x==="up")d.querySelector("#up").click();if(x==="rmimg"){f.ImageURL.value="";f.querySelector(".pv").hidden=true;f.querySelector(".ust").textContent="Image removed. Click Save.";f.querySelector("[data-x=up]").textContent="Upload photo"}};
  const up=d.querySelector("#up");if(up)up.onchange=()=>{if(up.files[0])upload(up.files[0],f);up.value=""};
- const u=f.ImageURL;if(u)u.oninput=()=>{const p=f.querySelector(".pv");p.hidden=!/^https:/.test(u.value);p.src=u.value};
- f.onsubmit=async e=>{e.preventDefault();const rec={[c.k]:id||newId(tab,f.Name.value)};c.f.forEach(([n])=>rec[n]=f[n].value);c.fl.forEach(n=>rec[n]=f[n].checked);
-  if(await act({action:"upsert",tab,record:rec},"Saved"))d.close()}}
+ const u=f.ImageURL;if(u){const p=f.querySelector(".pv"),m=f.querySelector(".ust");p.onerror=()=>{p.hidden=true;m.textContent="This link did not open as a picture. Use Upload photo, or a direct image link (ends with .jpg, .png or .webp)."};p.onload=()=>{m.textContent=""};u.oninput=()=>{m.textContent="";p.hidden=!/^https:/.test(u.value);if(!p.hidden)p.src=u.value}}
+ f.onsubmit=e=>{e.preventDefault();const rec={[c.k]:id||newId(tab,f.Name.value)};c.f.forEach(([n])=>rec[n]=f[n].value);c.fl.forEach(n=>rec[n]=f[n].checked);
+  if(rec.Name!==undefined&&!String(rec.Name).trim()){toast("Name is required",1);return}
+  if("Price" in rec&&(rec.Price===""||isNaN(+rec.Price)||+rec.Price<0)){toast("Enter a valid price",1);return}
+  if(rec.ImageURL&&!/^https:\/\//i.test(rec.ImageURL)){toast("Image link must start with https://",1);return}
+  act({action:"upsert",tab,record:rec});d.close()}}
 async function upload(file,f){const st=f.querySelector(".ust");
  if(!/^image\/(jpeg|png|webp)$/.test(file.type)){toast("Please choose a JPG, PNG or WebP photo",1);return}
  if(file.size>15e6){toast("Photo is too large (max 15 MB)",1);return}
@@ -77,5 +91,5 @@ function daily(){const {iso}=nowKeys(),isD=/^\d{4}/.test(dk),items=[...DB.Produc
  $("#dk").onchange=e=>{dk=e.target.value==="date"?iso:e.target.value;sel=null;daily()};const dd=$("#dd");if(dd)dd.onchange=e=>{if(e.target.value){dk=e.target.value;sel=null;daily()}}}
 function sets(){$("#main").innerHTML=`<h2>Settings</h2><div class="row"><div class="info"><b>Demo mode</b><small>Shows a "Demo data" banner on the website. Turn off when your real menu is ready.</small></div><button class="chip${demoOn()?" on":""}" id="dm">${demoOn()?"ON":"OFF"}</button></div>
  <div class="note">Admin password is stored in Google Script Properties (ADMIN_PASSWORD). Change it there; it is never saved in this website.</div>`;
- $("#dm").onclick=()=>act({action:"setSetting",key:"demo",value:!demoOn()},"Saved")}
+ $("#dm").onclick=()=>act({action:"setSetting",key:"demo",value:!demoOn()})}
 if(T)start();})();
