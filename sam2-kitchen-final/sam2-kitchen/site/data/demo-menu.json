@@ -1,0 +1,307 @@
+{
+ "settings": {
+  "demo": true
+ },
+ "categories": [
+  {
+   "id": "desi",
+   "name": "Desi Food",
+   "order": 0,
+   "active": true
+  },
+  {
+   "id": "frozen",
+   "name": "Frozen Food",
+   "order": 1,
+   "active": true
+  },
+  {
+   "id": "fast",
+   "name": "Fast Food",
+   "order": 2,
+   "active": true
+  },
+  {
+   "id": "dessert",
+   "name": "Desserts & Extras",
+   "order": 3,
+   "active": true
+  },
+  {
+   "id": "family",
+   "name": "Family Deals",
+   "order": 4,
+   "active": true
+  },
+  {
+   "id": "offers",
+   "name": "Special Offers",
+   "order": 5,
+   "active": true
+  }
+ ],
+ "products": [
+  {
+   "id": "p1",
+   "name": "Chicken Pulao (1 Plate)",
+   "category": "desi",
+   "price": 250,
+   "description": "Fragrant homemade pulao with tender chicken.",
+   "image": "",
+   "available": true,
+   "featured": true,
+   "published": true,
+   "order": 0
+  },
+  {
+   "id": "p2",
+   "name": "Chicken Karahi (1 Plate)",
+   "category": "desi",
+   "price": 450,
+   "description": "Rich tomato-based karahi, cooked fresh.",
+   "image": "",
+   "available": true,
+   "featured": true,
+   "published": true,
+   "order": 1
+  },
+  {
+   "id": "p3",
+   "name": "Daal Chawal (1 Plate)",
+   "category": "desi",
+   "price": 180,
+   "description": "Comforting home-style daal with steamed rice.",
+   "image": "",
+   "available": true,
+   "featured": false,
+   "published": true,
+   "order": 2
+  },
+  {
+   "id": "p4",
+   "name": "Aloo Gosht (1 Plate)",
+   "category": "desi",
+   "price": 320,
+   "description": "Slow-cooked and full of ghar ka zaiqa.",
+   "image": "",
+   "available": true,
+   "featured": false,
+   "published": true,
+   "order": 3
+  },
+  {
+   "id": "p5",
+   "name": "Frozen Samosa (12 pcs)",
+   "category": "frozen",
+   "price": 600,
+   "description": "Ready-to-fry, crispy golden samosas.",
+   "image": "",
+   "available": true,
+   "featured": false,
+   "published": true,
+   "order": 4
+  },
+  {
+   "id": "p6",
+   "name": "Frozen Kebab (12 pcs)",
+   "category": "frozen",
+   "price": 900,
+   "description": "Ready-to-fry kebabs, freezer friendly.",
+   "image": "",
+   "available": false,
+   "featured": false,
+   "published": true,
+   "order": 5
+  },
+  {
+   "id": "p7",
+   "name": "Chicken Burger",
+   "category": "fast",
+   "price": 350,
+   "description": "Juicy crispy chicken with house sauce.",
+   "image": "",
+   "available": true,
+   "featured": false,
+   "published": true,
+   "order": 6
+  },
+  {
+   "id": "p8",
+   "name": "Lab-e-Shirin (Half Litre)",
+   "category": "dessert",
+   "price": 250,
+   "description": "Creamy traditional dessert.",
+   "image": "",
+   "available": true,
+   "featured": false,
+   "published": true,
+   "order": 7
+  },
+  {
+   "id": "p9",
+   "name": "Family Deal (8-10 persons)",
+   "category": "family",
+   "price": 3599,
+   "description": "Complete family meal. Demo contents.",
+   "image": "",
+   "available": true,
+   "featured": true,
+   "published": true,
+   "order": 8
+  },
+  {
+   "id": "p10",
+   "name": "Special Offer Combo",
+   "category": "offers",
+   "price": 999,
+   "description": "Weekly special. Demo offer.",
+   "image": "",
+   "available": true,
+   "featured": false,
+   "published": true,
+   "order": 9
+  }
+ ],
+ "dailyMenu": [
+  {
+   "day": "Monday",
+   "productId": "p1",
+   "order": 0
+  },
+  {
+   "day": "Monday",
+   "productId": "p3",
+   "order": 1
+  },
+  {
+   "day": "Monday",
+   "productId": "p4",
+   "order": 2
+  },
+  {
+   "day": "Monday",
+   "productId": "p8",
+   "order": 3
+  },
+  {
+   "day": "Tuesday",
+   "productId": "p1",
+   "order": 0
+  },
+  {
+   "day": "Tuesday",
+   "productId": "p3",
+   "order": 1
+  },
+  {
+   "day": "Tuesday",
+   "productId": "p4",
+   "order": 2
+  },
+  {
+   "day": "Tuesday",
+   "productId": "p8",
+   "order": 3
+  },
+  {
+   "day": "Wednesday",
+   "productId": "p1",
+   "order": 0
+  },
+  {
+   "day": "Wednesday",
+   "productId": "p3",
+   "order": 1
+  },
+  {
+   "day": "Wednesday",
+   "productId": "p4",
+   "order": 2
+  },
+  {
+   "day": "Wednesday",
+   "productId": "p8",
+   "order": 3
+  },
+  {
+   "day": "Thursday",
+   "productId": "p1",
+   "order": 0
+  },
+  {
+   "day": "Thursday",
+   "productId": "p3",
+   "order": 1
+  },
+  {
+   "day": "Thursday",
+   "productId": "p4",
+   "order": 2
+  },
+  {
+   "day": "Thursday",
+   "productId": "p8",
+   "order": 3
+  },
+  {
+   "day": "Friday",
+   "productId": "p1",
+   "order": 0
+  },
+  {
+   "day": "Friday",
+   "productId": "p3",
+   "order": 1
+  },
+  {
+   "day": "Friday",
+   "productId": "p4",
+   "order": 2
+  },
+  {
+   "day": "Friday",
+   "productId": "p8",
+   "order": 3
+  },
+  {
+   "day": "Saturday",
+   "productId": "p1",
+   "order": 0
+  },
+  {
+   "day": "Saturday",
+   "productId": "p3",
+   "order": 1
+  },
+  {
+   "day": "Saturday",
+   "productId": "p4",
+   "order": 2
+  },
+  {
+   "day": "Saturday",
+   "productId": "p8",
+   "order": 3
+  },
+  {
+   "day": "Sunday",
+   "productId": "p1",
+   "order": 0
+  },
+  {
+   "day": "Sunday",
+   "productId": "p3",
+   "order": 1
+  },
+  {
+   "day": "Sunday",
+   "productId": "p4",
+   "order": 2
+  },
+  {
+   "day": "Sunday",
+   "productId": "p8",
+   "order": 3
+  }
+ ]
+}
