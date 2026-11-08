@@ -59,8 +59,7 @@ footer .fn{font:800 1.2rem Montserrat,sans-serif;color:#fff;margin:0 0 4px}
 #splash{position:fixed;inset:0;z-index:100;background:#fdf3e9;display:grid;place-items:center;animation:spOut .5s ease 2.3s forwards}
 html.no-splash #splash{display:none}#splash.skip{opacity:0;transition:opacity .25s;pointer-events:none}
 .sp-in{text-align:center;padding:0 20px}
-.sp-logo{width:min(48vw,220px);height:auto;aspect-ratio:1/1;animation:spLogo .9s cubic-bezier(.2,.8,.2,1) both}
-.sp-name{margin-top:4px;font:800 clamp(2rem,9.5vw,2.9rem) Montserrat,sans-serif;white-space:nowrap}
+.sp-logo{width:min(48vw,220px);height:auto;aspect-ratio:1/1;margin:0 auto;animation:.sp-name{margin-top:4px;font:800 clamp(2rem,9.5vw,2.9rem) Montserrat,sans-serif;white-space:nowrap}
 .sp-name .w{display:inline-block}.sp-name .m{color:var(--magenta);margin-right:.28em}.sp-name .g{color:var(--green)}.sp-name .o{color:var(--orange)}
 .sp-name span span,.sp-name .o{display:inline-block;opacity:0;transform:translateY(16px);animation:spLet .5s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(.55s + var(--i)*.045s)}
 .sp-line{display:block;height:3px;width:0;margin:10px auto 0;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--orange));animation:spLine .6s ease 1.2s forwards}
